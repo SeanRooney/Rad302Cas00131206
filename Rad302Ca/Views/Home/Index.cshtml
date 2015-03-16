@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Order>
+<script>
+    $(function () {
+        $('table tr').click(function () {
+                var id = this.id;
+                $.ajax({
+                    type: "GET",
+                    url: '/api/ord/getordaddr/' + id,
+                    contentType: "text/plain; charset-utf-8",
+                    data: id,
+                    dataType: "json",
+                    success: function (data) {
+                        //display
+                        $('#ordaddr').empty().append(data.street + '<br>').append(data.city + '<br>').append(data.country);
+                        addressLookup();
+                    }
+                });
+            }
+        ); //end click event handler
+    }); //end ready()
+
+    $(function countryDetails(details) {
+
+        $.ajax({
+            url: 'https://restcountries-v1.p.mashape.com/name/{name}', // The URL to the API.
+            type: 'GET', // The HTTP Method
+            data: {}, 
+            datatype: 'json',
+            success: function (data) { console.dir((data.source)); },
+            error: function (err) { alert(err); },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-Mashape-Authorization", "KMGE7Wc67fmshJjIJF0evQgy82Lsp1nUTjdjsnBpIkR4s1G2ZR"); //mash ape key
+            }
+        });
+    });
+</script>
+<div class="jumbotron">
+    <h1>Assignment</h1>
+    <p class="lead">Application to select orders and display information on a country</p>
+</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Address</div>
+            <div class="panel-body" style="overflow-x: hidden; 
+                height:400px">
+                <table class="table-striped table-condensed"
+                       id="ordtbl">
+                    @foreach (var item in Model)
+                    {
+                        <tr style="cursor:pointer" id="@item.OrderID"><td>@item.OrderID</td></tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Shipping Address</div>
+            <div class="panel-body" id="ordaddr" style="cursor:pointer"></div>
+            
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="gmap"></div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">Country Information</div>
+            <div class="panel-body" style="overflow-x: hidden;
+                height:400px">
+                <div class="panel-body" id="ctryinfo"></div>
+                
+                @*<table class="table-striped table-condensed"
+                       id="ordtbl">
+                    @foreach (var item in Model)
+                    {
+                        <tr style="cursor:pointer" id="@item.ShipCountry"><td>@item.ShipCountry</td></tr>
+                    }
+                </table>*@
+
+
+            </div>
+
+    </div>
+
+</div>
